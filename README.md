@@ -14,8 +14,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+Please create application and obtain CLIENT_SECRET and CLIENT_ID from https://apiconsole.cisco.com/ 
 
+
+Python Requirements:
 ```
 Python 3
 Modules:
@@ -28,5 +30,9 @@ Modules:
 
 ```
 pip3 install -r requirements.txt
+echo "CLIENT_ID = 'your_client_id'" >> config.py
+echo "CLIENT_SECRET = 'your_client_secret'" >> config.py
 ```
+
+
 
