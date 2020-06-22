@@ -62,9 +62,10 @@ Password:
 ```
 
 Output:
+```
 File hostname.xlsx will be created in working directory.
 file contains:
 AdvisoryID, Advisory Description, Advisory CVSS Score, Advisory URL
-
+```
 
 
