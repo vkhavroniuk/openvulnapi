@@ -1,4 +1,4 @@
-# Cisco OpenVuln API Usage 
+# My Cisco OpenVuln API Playground 
 
 Scripts to get Cisco Security Advisories from Cisco using OpenVuln API
 
