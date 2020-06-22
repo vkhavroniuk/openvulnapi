@@ -142,7 +142,6 @@ def get_psirt(token: str, os_type: str, version: str):
     url = 'https://api.cisco.com/security/advisories/'
     s = requests.Session()
     params = {'version': version}
-    print(version)
     s.headers.update({'Authorization': 'Bearer ' + token})
     logging.info('Getting PSIRT for ' + os_type.upper() +
                  ' device. Version: ' + version)
@@ -174,13 +173,11 @@ def get_psirt(token: str, os_type: str, version: str):
                               advisory['cvssBaseScore'], advisory['publicationUrl']])
         filename = host.replace('.', '_') + '.xlsx'
         workbook.save(filename)
-        logging.info('File :' + filename + ' was saved.')
+        logging.info('File: ' + filename + ' was saved.')
 
 
 def user_password(username=None):
-    if username is not None:
-        username = args.user
-    else:
+    if username is None:
         username = input('Username: ')
     try:
         password = getpass.getpass(prompt='Password: ')
