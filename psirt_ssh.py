@@ -36,18 +36,30 @@ def ssh_version(host: str, username: str, password: str):
 
     """
     command = 'show version'
-    remote_device = {'device_type': 'autodetect',
+    remote_device = {'device_type': 'cisco_ios',
                      'host': host,
                      'username': username,
                      'password': password}
-    try:
-        guess = SSHDetect(**remote_device)
-    except (NetmikoAuthenticationException, NetmikoTimeoutException) as e:
-        logging.error(e)
-        exit(1)
 
-    best_match = guess.autodetect()
-    remote_device['device_type'] = best_match
+    VERSION_MAPPER = {
+        'ios': {
+            'device_pattern': [
+                r'Cisco IOS Software', r'Cisco Internetwork Operating System Software'],
+            'version_pattern': r'Cisco.IOS.Software.*Version\s+([^,\s]+).+'
+        },
+
+        'nxos': {
+            'device_pattern': [r'Cisco Nexus Operating System', r'NX-OS'],
+            'version_pattern': r'.*version (\d+.+)$'
+
+        },
+        'iosxe': {
+            'device_pattern': [
+                r'Cisco IOS XE Software', r'IOS-XE'],
+            'version_pattern': 'Cisco.IOS.XE.Software.*Version\s+([^,\s]+)[.|\s]+'
+        }
+
+    }
 
     try:
         conn = ConnectHandler(**remote_device)
@@ -57,20 +69,14 @@ def ssh_version(host: str, username: str, password: str):
         logging.error(e)
         exit(1)
 
-    if best_match == 'cisco_nxos':
-        regex_pattern = r'.*version (\d+.+)$'
-        version = re.findall(regex_pattern, output, re.MULTILINE)
-        if version:
-            return ['nxos', version[0]]
-    elif best_match == 'cisco_ios':
-        regex_pattern = r'Cisco.IOS.XE.Software.*Version\s+([^,\s]+)[.|\s]+'
-        version = re.findall(regex_pattern, output, re.MULTILINE)
-        if version:
-            return ['iosxe', version[0]]
-    if best_match == 'cisco_ios' and not version:
-        regex_pattern = r'Cisco.IOS.Software.*Version\s+([^,\s]+).+'
-        version = re.findall(regex_pattern, output, re.MULTILINE)
-        return ['ios', version[0]] if version else ['unknown', 'unknown']
+    for device_type, patterns in VERSION_MAPPER.items():
+        for pattern in patterns['device_pattern']:
+            match = re.search(pattern, output, flags=re.I)
+            if match:
+                version = re.findall(
+                    patterns['version_pattern'], output, re.MULTILINE)
+                if version:
+                    return [device_type, version[0]]
 
 
 def nxos_rest_version(host: str, username: str, password: str):
@@ -192,9 +198,9 @@ if __name__ == '__main__':
     parser.add_argument('--host', type=str, default=None,
                         help='hostname/ip address', required=True)
     parser.add_argument('--user', type=str, default=None, help='Username')
-    parser.add_argument('--verbose', action='store_true', 
-                         help='Enable Verbose Output')
-    parser.add_argument('--nxapi', action='store_true', 
+    parser.add_argument('--verbose', action='store_true',
+                        help='Enable Verbose Output')
+    parser.add_argument('--nxapi', action='store_true',
                         help='Connect Using Cisco NX-OS NXAPI')
     args = parser.parse_args()
 
