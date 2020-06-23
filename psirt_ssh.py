@@ -42,23 +42,21 @@ def ssh_version(host: str, username: str, password: str):
                      'password': password}
 
     VERSION_MAPPER = {
+        'iosxe': {
+            'device_pattern': [
+                r'Cisco IOS XE Software', r'IOS-XE'],
+            'version_pattern': 'Cisco.IOS.XE.Software.*Version\s+([^,\s]+)[.|\s]+'
+        },
         'ios': {
             'device_pattern': [
                 r'Cisco IOS Software', r'Cisco Internetwork Operating System Software'],
             'version_pattern': r'Cisco.IOS.Software.*Version\s+([^,\s]+).+'
         },
-
         'nxos': {
             'device_pattern': [r'Cisco Nexus Operating System', r'NX-OS'],
             'version_pattern': r'.*version (\d+.+)$'
 
-        },
-        'iosxe': {
-            'device_pattern': [
-                r'Cisco IOS XE Software', r'IOS-XE'],
-            'version_pattern': 'Cisco.IOS.XE.Software.*Version\s+([^,\s]+)[.|\s]+'
         }
-
     }
 
     try:
