@@ -55,8 +55,6 @@ $ python3.7 psirt_ssh.py --host 192.168.123.236 --user admin
 Password: 
 21:42:08: Connected (version 1.99, client Cisco-1.25)
 21:42:09: Authentication (password) successful!
-21:42:18: Connected (version 1.99, client Cisco-1.25)
-21:42:19: Authentication (password) successful!
 21:42:24: Getting PSIRT for IOSXE device. Version: 03.16.00.S
 21:42:35: File: 192_168_123_236.xlsx was saved.
 ```
