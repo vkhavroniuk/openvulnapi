@@ -141,6 +141,7 @@ def get_psirt(token: str, os_type: str, version: str, filename: str):
     :param token: OpenVulnAPI access token
     :param os_type: device OS type: nxos, ios, iosxe
     :param version: device version. e.g. 16.06.03 
+    :param filename: name of the file without extension
 
     """
     url = 'https://api.cisco.com/security/advisories/'
