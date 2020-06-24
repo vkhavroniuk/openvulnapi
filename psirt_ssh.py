@@ -136,7 +136,7 @@ def get_auth_token(client_id: str, client_secret: str):
         exit(1)
 
 
-def get_psirt(token: str, os_type: str, version: str):
+def get_psirt(token: str, os_type: str, version: str, filename: str):
     """ Get PSIRT's for device
     :param token: OpenVulnAPI access token
     :param os_type: device OS type: nxos, ios, iosxe
@@ -153,9 +153,8 @@ def get_psirt(token: str, os_type: str, version: str):
     if 'errorCode' in ret.json():
         logging.info(os_type.upper() + ' ' + version +
                      ' ' + ret.json()['errorMessage'])
-        exit(0)
+        exit(1)
     else:
-        logging.debug('REST API ANSWER:', ret.json())
         advisories = ret.json()['advisories']
         # generate Excel Workbook
         workbook = Workbook()
@@ -175,7 +174,7 @@ def get_psirt(token: str, os_type: str, version: str):
         for advisory in advisories:
             worksheet.append([advisory['advisoryId'], advisory['advisoryTitle'],
                               advisory['cvssBaseScore'], advisory['publicationUrl']])
-        filename = host.replace('.', '_') + '.xlsx'
+        filename = filename.replace('.', '_') + '.xlsx'
         workbook.save(filename)
         logging.info('File: ' + filename + ' was saved.')
 
@@ -227,4 +226,4 @@ if __name__ == '__main__':
         device, version = ssh_version(host, username, password)
 
     token = get_auth_token(config.CLIENT_ID, config.CLIENT_SECRET)
-    get_psirt(token, device, version)
+    get_psirt(token, device, version, host)
